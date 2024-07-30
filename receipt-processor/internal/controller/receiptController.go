@@ -7,15 +7,15 @@ import (
 	"receipt-processor/internal/model"
 	"receipt-processor/internal/service"
 	"receipt-processor/internal/utils"
-	"time"
+	"receipt-processor/internal/validator"
 
 	"github.com/gin-gonic/gin"
 )
 
 func ProcessReceipt(c *gin.Context) {
-	// var receipt model.Receipt
 	fmt.Println("Processing receipt")
 	data, err := utils.ParseFields(c)
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -23,26 +23,24 @@ func ProcessReceipt(c *gin.Context) {
 
 	var receipt model.Receipt
 	updatedData, err := json.Marshal(data)
+
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to encode data into JSON"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
 	if err := json.Unmarshal(updatedData, &receipt); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to decode JSON into struct"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON format"})
 		return
 	}
 
-	if _, err := time.Parse("2006-01-02", receipt.PurchaseDate); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid purchase date format"})
-		return
-	}
-
-	if _, err := time.Parse("15:04", receipt.PurchaseTime); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid purchase time format"})
+	if err := validator.ValidateReceipt(receipt); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	id, err := service.SaveReceipt(receipt)
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save receipt"})
 		return
