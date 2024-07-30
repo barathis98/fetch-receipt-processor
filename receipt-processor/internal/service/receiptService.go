@@ -10,23 +10,32 @@ import (
 	"github.com/google/uuid"
 )
 
-var receipt = make(map[string]model.Receipt)
+var receipts = make(map[string]model.Receipt)
 
-func saveReceipt(receipt model.Receipt) (string, error) {
-	// receipt[receipt.ID] = receipt
+func SaveReceipt(receipt model.Receipt) (string, error) {
 	receipt.ID = uuid.New().String()
-
-	if _, err := time.Parse("2006-01-02", receipt.PurchaseDate); err != nil {
-		return "", fmt.Errorf("invalid date format: %s", receipt.PurchaseDate)
-	}
-	if _, err := time.Parse("15:04", receipt.PurchaseTime); err != nil {
-		return "", fmt.Errorf("invalid time format: %s", receipt.PurchaseTime)
-	}
-	receipt.Points = calculatePoints()
+	receipt.Points = CalculatePoints(receipt)
+	receipts[receipt.ID] = receipt
 	return receipt.ID, nil
 }
 
-func calculatePoints(receipt model.Receipt) int {
+func GetReceiptById(id string) (model.Receipt, error) {
+	receipt, exists := receipts[id]
+	if !exists {
+		return model.Receipt{}, fmt.Errorf("receipt not found")
+	}
+	return receipt, nil
+}
+
+func GetPoints(id string) (int, error) {
+	receipt, exists := receipts[id]
+	if !exists {
+		return 0, fmt.Errorf("receipt not found")
+	}
+	return receipt.Points, nil
+}
+
+func CalculatePoints(receipt model.Receipt) int {
 	points := 0
 	for _, ch := range receipt.Retailer {
 		if (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9') {
