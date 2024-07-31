@@ -137,8 +137,7 @@ If you encounter any issues while setting up or running the application, try the
 1. Ensure you have the correct version of Go installed by running `go version`.
 2. Check that all dependencies are properly installed by running `go mod tidy`.
 3. Make sure no other application is using port 8080.
-4. If using Docker, ensure Docker is running on your system.
-5. If you're having trouble with Go commands, make sure your PATH includes the Go binary directory.
-6. If make commands are not working, ensure you have Make installed on your system.
+4. If you're having trouble with Go commands, make sure your PATH includes the Go binary directory.
+5. If make commands are not working, ensure you have Make installed on your system.
 
 For any other issues, please open an issue on the GitHub repository.
