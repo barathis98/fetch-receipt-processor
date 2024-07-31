@@ -14,6 +14,7 @@ This project implements a web service that processes receipts and calculates poi
   - [API Endpoints](#api-endpoints)
     - [1. Process Receipt](#1-process-receipt)
     - [2. Get Points](#2-get-points)
+  - [Receipt Validation](#receipt-validation)
   - [Troubleshooting](#troubleshooting)
 
 ## Installation
@@ -71,6 +72,7 @@ make run
 ```
 
 The server will start and listen on `http://localhost:8080`.
+(If your machine is a mac it will ask your permission to allow network connectivity. Please click on allow to start the server.)
 
 If you want to see other available make commands, you can run:
 
@@ -129,6 +131,20 @@ Example response:
 }
 ```
 
+## Receipt Validation
+
+The API includes a validator to ensure that incoming receipt data is valid and complete before processing. Here's an overview of the validation rules:
+
+1. **Retailer**: Must not be empty.
+2. **Purchase Date**: Must be provided and in the format YYYY-MM-DD.
+3. **Purchase Time**: Must be provided and in the format HH:MM.
+4. **Items**: At least one item is required.
+5. **Total**: Must be greater than zero.
+6. **Individual Items**: Each item must have a non-empty short description and a price greater than zero.
+
+
+
+If any of these validations fail, the API will return an error message indicating the specific validation that failed. This helps ensure that only valid receipts are processed and points are calculated correctly.
 
 ## Troubleshooting
 
