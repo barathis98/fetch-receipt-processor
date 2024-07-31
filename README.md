@@ -49,7 +49,7 @@ Now that Go is installed, you can proceed with installing the project:
 
 2. Clone the repository:
    ```
-   git clone https://github.com/yourusername/fetch-receipt-processor.git
+   git clone https://github.com/barathis98/fetch-receipt-processor.git
    cd fetch-recept-processor/receipt-processor
    ```
 
